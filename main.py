@@ -1,66 +1,40 @@
-import pandas as pd
+from data_preprocessing.clean_data import clean_data
+from data_preprocessing.handle_missing_values import handle_missing_values
+from data_preprocessing.handle_outliers import handle_outliers
+from data_preprocessing.load_data import load_data
+from segmentation.segment_by_day import segment_by_day
+from lstm_training.prepare_training_data import prepare_training_data
+# from lstm_training.train_lstm import train_lstm
+# from lstm_training.evaluate_model import evaluate_model
 
-def load_and_validate_csv(file_path: str):
-    df = pd.read_csv(file_path)
-
-    total_linhas = len(df)
-    print(f"Total de linhas importadas: {total_linhas}")
-
-    inconsistent_rows = df[df.isnull().any(axis=1)].index.tolist()
-    if inconsistent_rows:
-        print(f"✗ Linhas com número incorreto de colunas: {inconsistent_rows}")
-    else:
-        print("✓ Todas as linhas possuem o número correto de colunas.")
+def main():
+    # Carregar os dados
+    df = load_data('data_test.csv')
     
-    duplicate_rows_indices = df[df.duplicated()].index.tolist()
-    if duplicate_rows_indices:
-        print(f"✗ Linhas duplicadas: {duplicate_rows_indices}")
-    else:
-        print("✓ Nenhuma linha duplicada encontrada.")
+    # Pré-processamento
+    df_cleaned = clean_data(df)
     
-    return df
+    # Segmentação
+    df_segmented = segment_by_day(df_cleaned)
 
+    df_handled = handle_missing_values(df_segmented, "drop")
+    print(len(df_handled))
 
-def analyze_data(df: pd.DataFrame):
-    if 'attrName' in df.columns and 'attrType' in df.columns:
-        distinct_combinations = df[['attrName', 'attrType']].dropna().drop_duplicates()
-        print("Valores DISTINCT simultâneos entre 'attrName' e 'attrType':")
-        print(distinct_combinations.to_string(index=False))
-        print("\n")
+    df_handled_outliers = handle_outliers(df_handled, 1)
+    print(len(df_handled_outliers))
     
-    if 'recvTime' in df.columns:
-        min_time = df['recvTime'].min()
-        max_time = df['recvTime'].max()
-        print(f"Menor valor de 'recvTime': {min_time}")
-        print(f"Maior valor de 'recvTime': {max_time}")
-
-def transform_and_save(df: pd.DataFrame, output_file_lstm: str, output_file_transformed: str):
-    df_lstm = df[df['attrName'] == 'lstm_forecast']
-    if not df_lstm.empty:
-        df_lstm_pivot = df_lstm.pivot_table(index='recvTime', columns='attrName', values='attrValue', aggfunc='first')
-        df_lstm_pivot = df_lstm_pivot.dropna(axis=1, how='all')
-        df_lstm_pivot.to_csv(output_file_lstm)
-        print(f"Novo arquivo CSV para 'lstm_forecast' salvo em: {output_file_lstm}")
+    # Preparar dados para LSTM
+    # X_train, y_train = prepare_training_data(df_segmented, ['mean_cpu_usage'])
     
-    df_other = df[df['attrName'] != 'lstm_forecast']
-    if not df_other.empty:
-        df_other_pivot = df_other.pivot_table(index='recvTime', columns='attrName', values='attrValue', aggfunc='first')
-        df_other_pivot = df_other_pivot.dropna(axis=1, how='all')
-        df_other_pivot.to_csv(output_file_transformed)
-        print(f"Novo arquivo CSV para os dados restantes salvo em: {output_file_transformed}")
+#     # Treinamento do modelo LSTM
+#     model = train_lstm(X_train, y_train)
+    
+#     # Avaliação do modelo
+#     mse, mae = evaluate_model(model, X_train, y_train)
+    
+#     print(f'Modelo avaliado com MSE: {mse} e MAE: {mae}')
 
-
-FILE_PATH = "data.csv"
-OUTPUT_FILE_LSTM = "data_lstm.csv"
-OUTPUT_FILE_TRANSFORMED = "data_transformed.csv"
-
-print(f"Iniciando analise do arquivo {FILE_PATH}\n")
-
-df = load_and_validate_csv(FILE_PATH)
-print()
-
-analyze_data(df)
-print()
-
-transform_and_save(df, OUTPUT_FILE_LSTM, OUTPUT_FILE_TRANSFORMED)
-print()
+    df_handled.to_csv("vitaoSemFreio3.csv", sep=";", index=False)
+    
+if __name__ == '__main__':
+    main()
