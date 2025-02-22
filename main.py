@@ -7,7 +7,7 @@ from data_preprocessing.transform_data import transform_data
 def main():
     FILE_PATH = 'data_test.csv'
     FILE_PATH_INPUT_DATA = 'data_input.csv'
-    FILE_PATH_FORECAST_DATA = 'data_forcast.csv'
+    FILE_PATH_FORECAST_DATA = 'data_forecast.csv'
 
 
     # Carregar dados
