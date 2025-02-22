@@ -1,6 +1,6 @@
 import pandas as pd
 
-def convert_column_to_numeric(df, column_name):
+def convert_column_to_numeric(df: pd.DataFrame, column_name: str):
     """
     Converte uma coluna para tipo numérico, caso seja possível.
 
@@ -11,7 +11,7 @@ def convert_column_to_numeric(df, column_name):
     df[column_name] = pd.to_numeric(df[column_name], errors='coerce')
     return df
 
-def parse_datetime_column(df, column_name):
+def parse_datetime_column(df: pd.DataFrame, column_name: str):
     """
     Converte uma coluna para o formato datetime.
 
