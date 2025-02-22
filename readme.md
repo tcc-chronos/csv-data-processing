@@ -8,6 +8,38 @@ We will be working with a dataset that contains various events, including normal
 
 This exercise will be an essential step toward building a robust prototype for our LSTM forecast model.
 
+## Execution of the project
+1. Validate if python and pip are installed correctly
+```
+python --version
+pip --version
+```
+
+or 
+
+```
+python3 --version
+pip3 --version
+```
+
+2. Install the required libraries:
+```
+pip install -r requirements.txt
+```
+
+3. Add the csv file to the project and change the `FILE_PATH` variable in [main.py](https://github.com/tcc-chronos/csv-data-processing/blob/main/main.py)
+
+4. Run the project
+```
+python main.py 
+```
+
+or 
+
+```
+python3 main.py 
+```
+
 ## Steps to Follow
 1. **Data Preprocessing:**
    - Load the provided dataset.
