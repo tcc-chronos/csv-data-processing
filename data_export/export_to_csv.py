@@ -1,13 +1,13 @@
 import pandas as pd
 
-def export_to_csv(df: pd.DataFrame, file_path: str, sep: str = ';', index: bool = False):
+def export_to_csv(df: pd.DataFrame, file_path: str, sep: str = ';', index: bool = True):
     """
     Realiza a exportação de um DataFrame para o arquivo CSV especificado.
 
     :param df: DataFrame com os dados carregados
     :param file_path: Caminho do arquivo CSV
     :param sep: Separador dos dados no arquivo CSV (padrão: ';')
-    :param index: Indica se o índice do DataFrame será exportado como uma coluna no arquivo CSV (padrão: False)
+    :param index: Indica se o índice do DataFrame será exportado como uma coluna no arquivo CSV (padrão: True, para manter o recvTime)
     """
     try:
         df.to_csv(file_path, sep=sep, index=index)
