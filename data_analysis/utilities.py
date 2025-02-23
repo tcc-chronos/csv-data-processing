@@ -16,7 +16,6 @@ def save_plot(ptl, file_path: str, file_name: str):
 
       ptl.tight_layout()
       ptl.savefig(output_file)
-      ptl.close()
       print(f'Gráfico salvo em: {file_path}')
     except Exception as e:
       print(f"Erro ao salvar o gráfico em {file_path}: {e}")

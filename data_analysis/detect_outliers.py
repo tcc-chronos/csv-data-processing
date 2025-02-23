@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 from data_analysis.utilities import save_plot
 
-def detect_outliers(df: pd.DataFrame, save_imgs_path: str, quartis_percentile=0.25, multiplier=3):
+def detect_outliers(df: pd.DataFrame, save_imgs_path: str, quartis_percentile=0.25, multiplier=3, display_graphs=False):
     """
     Analisa os possíveis outliers dos dados e exibe estatísticas básicas, além de gerar gráficos.
 
@@ -12,6 +12,7 @@ def detect_outliers(df: pd.DataFrame, save_imgs_path: str, quartis_percentile=0.
     :param save_imgs_path: Diretório no qual as imagens dos outliers serão salvas
     :param quartis_percentile: Percentil usado para calcular Q1 e Q3 (default: 0.25)
     :param multiplier: Multiplicador do IQR para definir os limites dos outliers (default: 3)
+    :param display_graphs: Determina se os gráficos gerados serão exibidos em tempo de execução ou apenas salvos (default: False)
     """
     for column in df.select_dtypes(include=[np.number]).columns:
       mean_val = df[column].mean()
@@ -35,7 +36,7 @@ def detect_outliers(df: pd.DataFrame, save_imgs_path: str, quartis_percentile=0.
         # print(tabulate(outliers_display, headers="keys", tablefmt="plain", stralign="left", showindex=False))
         
         # Gerar o gráfico
-        save_outlier_plot(df, outliers, column, save_imgs_path)
+        save_outlier_plot(df, outliers, column, save_imgs_path, display_graphs)
 
       print()
 
@@ -58,7 +59,7 @@ def detect_outliers_iqr(df: pd.DataFrame, column: str, quartis_percentile: float
 
   return df[(df[column] < lim_inf) | (df[column] > lim_sup)]
 
-def save_outlier_plot(df: pd.DataFrame, outliers: pd.DataFrame, column: str, save_imgs_path: str):
+def save_outlier_plot(df: pd.DataFrame, outliers: pd.DataFrame, column: str, save_imgs_path: str, display_graphs: bool):
   """
   Plota os dados e destaca os outliers em um gráfico, salvando a imagem no diretório espeficiado, no formato png.
   
@@ -66,6 +67,7 @@ def save_outlier_plot(df: pd.DataFrame, outliers: pd.DataFrame, column: str, sav
   :param outliers: DataFrame contendo os outliers
   :param column: Coluna que será analisada para outliers
   :param save_imgs_path: Diretório no qual as imagens dos outliers serão salvas
+  :param display_graphs: Determina se os gráficos gerados serão exibidos em tempo de execução ou apenas salvos
   """
   df_reset = df.reset_index()  # Resetando o índice para garantir que 'recvTime' seja uma coluna normal
   outliers_reset = outliers.reset_index() # Resetando o índice para garantir que 'recvTime' seja uma coluna normal
@@ -84,3 +86,7 @@ def save_outlier_plot(df: pd.DataFrame, outliers: pd.DataFrame, column: str, sav
   plt.legend()
 
   save_plot(plt, save_imgs_path, f'{column}_outliers')
+  if display_graphs:
+    plt.show()
+  
+  plt.close()

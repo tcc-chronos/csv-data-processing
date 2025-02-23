@@ -11,6 +11,8 @@ def main():
 
     FILE_PATH_IMGS_OUTLIERS = 'imgs/outliers'
 
+    DISPLAY_GRAPHS = True
+
     # Carregar dados
     df_loaded = load_data(FILE_PATH)
     if df_loaded is None:
@@ -22,7 +24,7 @@ def main():
     # Realizar a transposição dos valores de acordo com o tempo, separando em dados de entrada e dados previstos
     df_input, df_forecast = transform_data(df_loaded)
 
-    detect_outliers(df_input, FILE_PATH_IMGS_OUTLIERS)
+    detect_outliers(df_input, FILE_PATH_IMGS_OUTLIERS, display_graphs=DISPLAY_GRAPHS)
     
     export_to_csv(df_input, FILE_PATH_INPUT_DATA)
     export_to_csv(df_forecast, FILE_PATH_FORECAST_DATA)
