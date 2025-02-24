@@ -30,6 +30,12 @@ def main():
 
     # Realizar a transposição dos valores de acordo com o tempo, separando em dados de entrada e dados previstos
     df_input, df_forecast = transform_data(df_loaded)
+    if df_input is None or df_forecast is None:
+        print('Erro ao transformar os dados')
+        return
+    
+    df_input, _ = remove_empty_rows(df_input)
+    df_forecast, _ = remove_empty_rows(df_forecast)
 
     # Detectar e salvar os outliers nos dados de entrada
     detect_outliers(df_input, FILE_PATH_IMGS_OUTLIERS, display_graphs=DISPLAY_GRAPHS)
@@ -44,9 +50,6 @@ def main():
     detect_outliers(df_segmented_input, FILE_PATH_IMGS_OUTLIERS + '/segmented', display_graphs=DISPLAY_GRAPHS, ignore_non_outliers=True)
     
     print('Exportando csv')
-    
-    df_input, linhas_removidas_input = remove_empty_rows(df_input)
-    df_forecast, linhas_removidas_forecast = remove_empty_rows(df_forecast)
 
     export_to_csv(df_input, FILE_PATH_INPUT_DATA)
     export_to_csv(df_forecast, FILE_PATH_FORECAST_DATA)
