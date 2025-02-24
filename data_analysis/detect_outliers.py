@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 from data_analysis.utilities import save_plot
 
-def detect_outliers(df: pd.DataFrame, save_imgs_path: str, quartis_percentile=0.25, multiplier=3, display_graphs=False):
+def detect_outliers(df: pd.DataFrame, save_imgs_path: str, quartis_percentile=0.25, multiplier=3, display_graphs=False, ignore_non_outliers=False):
     """
     Analisa os possíveis outliers dos dados e exibe estatísticas básicas, além de gerar gráficos.
 
@@ -13,6 +13,7 @@ def detect_outliers(df: pd.DataFrame, save_imgs_path: str, quartis_percentile=0.
     :param quartis_percentile: Percentil usado para calcular Q1 e Q3 (default: 0.25)
     :param multiplier: Multiplicador do IQR para definir os limites dos outliers (default: 3)
     :param display_graphs: Determina se os gráficos gerados serão exibidos em tempo de execução ou apenas salvos (default: False)
+    :param ignore_non_outliers: Ignora os dados que não são outliers, não criando seus gráficos (default: False)
     """
     for column in df.select_dtypes(include=[np.number]).columns:
       mean_val = df[column].mean()
@@ -35,7 +36,8 @@ def detect_outliers(df: pd.DataFrame, save_imgs_path: str, quartis_percentile=0.
         # outliers_display = outliers.reset_index()[["recvTime", column]]
         # print(tabulate(outliers_display, headers="keys", tablefmt="plain", stralign="left", showindex=False))
         
-        # Gerar o gráfico
+      # Gerar o gráfico
+      if not outliers.empty or not ignore_non_outliers :
         save_outlier_plot(df, outliers, column, save_imgs_path, display_graphs)
 
       print()
@@ -69,17 +71,17 @@ def save_outlier_plot(df: pd.DataFrame, outliers: pd.DataFrame, column: str, sav
   :param save_imgs_path: Diretório no qual as imagens dos outliers serão salvas
   :param display_graphs: Determina se os gráficos gerados serão exibidos em tempo de execução ou apenas salvos
   """
-  df_reset = df.reset_index()  # Resetando o índice para garantir que 'recvTime' seja uma coluna normal
-  outliers_reset = outliers.reset_index() # Resetando o índice para garantir que 'recvTime' seja uma coluna normal
+  # df_reset = df.reset_index()  # Resetando o índice para garantir que 'recvTime' seja uma coluna normal
+  # outliers_reset = outliers.reset_index() # Resetando o índice para garantir que 'recvTime' seja uma coluna normal
 
   plt.figure(figsize=(10, 6))
 
   # Plotando todos os dados
-  plt.plot(df_reset['recvTime'], df_reset[column], label='Todos os dados', color='blue', marker='o', markersize=3)
+  plt.plot(df.index, df[column], label='Todos os dados', color='blue', marker='o', markersize=3)
   # Plotando os outliers com uma cor diferente
-  plt.scatter(outliers_reset['recvTime'], outliers_reset[column], color='red', label='Outliers', zorder=5)
+  plt.scatter(outliers.index, outliers[column], color='red', label='Outliers', zorder=5)
 
-  plt.xlabel('Tempo (recvTime)')
+  plt.xlabel('Tempo')
   plt.ylabel(column)
   plt.title(f'Outliers na coluna {column}')
   plt.xticks(rotation=45)
