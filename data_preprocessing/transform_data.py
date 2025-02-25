@@ -24,12 +24,15 @@ def transform_data(df: pd.DataFrame):
         if not df_lstm.empty:
             df_lstm_pivot = df_lstm.pivot_table(index='recvTime', columns='attrName', values='attrValue', aggfunc='first')
             df_lstm_pivot = df_lstm_pivot.dropna(axis=1, how='all')
+            df_lstm_pivot["lstm_forecast"] = pd.to_numeric(df_lstm_pivot["lstm_forecast"], errors="coerce")
 
         # Processamento dos demais dados
         df_other = df[df['attrName'] != 'lstm_forecast']
         if not df_other.empty:
             df_other_pivot = df_other.pivot_table(index='recvTime', columns='attrName', values='attrValue', aggfunc='first')
             df_other_pivot = df_other_pivot.dropna(axis=1, how='all')
+
+            df_other_pivot = df_other_pivot.apply(pd.to_numeric, errors="coerce")
 
         return df_other_pivot, df_lstm_pivot
 

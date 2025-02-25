@@ -8,7 +8,7 @@ def load_data(file_path: str):
     :return: DataFrame com os dados carregados ou None em caso de erro
     """
     try:
-        data = pd.read_csv(file_path)
+        data = pd.read_csv(file_path, parse_dates=["recvTime"])
         print(f"Arquivo '{file_path}' carregado com sucesso.\n")
         return data
     except FileNotFoundError:
