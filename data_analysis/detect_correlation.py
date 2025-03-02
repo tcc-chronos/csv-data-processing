@@ -49,7 +49,7 @@ def detect_incoming_cpu_correlation(df: pd.DataFrame, save_imgs_path: str, displ
   sns.scatterplot(x=df_corr["incoming_tx_mean"], y=df_corr["mean_cpu_usage"], alpha=0.5)
   sns.regplot(x=df_corr["incoming_tx_mean"], y=df_corr["mean_cpu_usage"], scatter=False, color="red")
 
-  plt.xlabel("Incoming Transactions Mean")
+  plt.xlabel("incoming_tx_mean")
   plt.ylabel("mean_cpu_usage")
   plt.title(f"Correlação: {correlation_value:.2f}")
   plt.grid(True)
