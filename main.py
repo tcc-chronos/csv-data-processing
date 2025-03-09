@@ -1,4 +1,4 @@
-from data_analysis.detect_correlation import detect_correlation, detect_cpu_incoming_correlation_matrix, detect_incoming_cpu_correlation
+from data_analysis.detect_correlation import detect_correlation, detect_incoming_cpu_correlation, detect_incoming_pod_cpu_correlation, detect_incoming_pod_service_time_correlation, detect_incoming_service_time_correlation
 from data_analysis.detect_outliers import detect_outliers
 from data_analysis.forecast_comparison import forecast_comparison
 from data_export.export_to_csv import export_to_csv
@@ -44,7 +44,10 @@ def main():
     detect_correlation(df_input, FILE_PATH_IMGS_CORRELATION, display_graphs=DISPLAY_GRAPHS)
 
     detect_incoming_cpu_correlation(df_input, FILE_PATH_IMGS_CORRELATION, display_graphs=DISPLAY_GRAPHS)
-    #detect_cpu_incoming_correlation_matrix(df_input, FILE_PATH_IMGS_CORRELATION, display_graphs=DISPLAY_GRAPHS)
+    detect_incoming_pod_cpu_correlation(FILE_PATH_INPUT_DATA, FILE_PATH_IMGS_CORRELATION, display_graphs=DISPLAY_GRAPHS)
+
+    detect_incoming_service_time_correlation(df_input, FILE_PATH_IMGS_CORRELATION, display_graphs=DISPLAY_GRAPHS)
+    detect_incoming_pod_service_time_correlation(FILE_PATH_INPUT_DATA, FILE_PATH_IMGS_CORRELATION, display_graphs=DISPLAY_GRAPHS)
   
     # # Segmentar os dados de entrada em segmentos de tempo (exibir as estatísticas dos dados de entrada)
     # df_segmented_input = segment_data(df_input, TIME_SEGMENT)
